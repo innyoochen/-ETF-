@@ -1,0 +1,166 @@
+﻿<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>7861 每日股票分析</title>
+  <style>
+    :root {
+      --ink: #273142;
+      --muted: #6f7885;
+      --paper: #fbf8f4;
+      --line: #eadfd8;
+      --cream: #fffaf3;
+      --pink: #e9a9ba;
+      --mint: #86bfa7;
+      --blue: #78a7d8;
+      --yellow: #e6bf69;
+      --red: #c65c67;
+      --shadow: 0 18px 42px rgba(113, 87, 74, .11);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif; color: var(--ink); background: linear-gradient(180deg, #f8edf1 0, #f8fbf4 380px, var(--paper) 100%); line-height: 1.65; }
+    .page { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 34px 0 50px; }
+    .hero { display: grid; grid-template-columns: 1.18fr .82fr; gap: 16px; margin-bottom: 16px; }
+    .card, .hero-main, .side-card { background: rgba(255,255,255,.95); border: 1px solid rgba(234,223,216,.92); border-radius: 8px; box-shadow: var(--shadow); }
+    .hero-main { padding: 26px; display: grid; grid-template-columns: 1fr 176px; gap: 18px; align-items: center; overflow: hidden; }
+    .side-card { padding: 24px; min-height: 220px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
+    .side-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 8px; background: linear-gradient(90deg, var(--pink), var(--yellow), var(--mint), var(--blue)); }
+    .eyebrow { margin: 0 0 8px; color: #9d6377; font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    h1 { margin: 0 0 10px; font-size: clamp(30px, 4vw, 50px); line-height: 1.08; letter-spacing: 0; }
+    h2 { margin: 0; font-size: 21px; line-height: 1.25; }
+    h3 { margin: 0 0 8px; font-size: 18px; }
+    p { margin: 0; color: var(--muted); }
+    .date-label { color: var(--muted); font-size: 14px; margin-top: 6px; }
+    .date { font-size: 31px; font-weight: 800; line-height: 1.15; color: #344055; }
+    .stance { border-top: 1px solid var(--line); padding-top: 16px; font-size: 18px; font-weight: 800; color: #344055; }
+    .illustration { width: 176px; max-width: 100%; justify-self: end; filter: drop-shadow(0 14px 24px rgba(111, 87, 74, .12)); }
+    .grid { display: grid; gap: 14px; margin-top: 14px; }
+    .three { grid-template-columns: repeat(3, 1fr); }
+    .two { grid-template-columns: repeat(2, 1fr); }
+    .card { padding: 22px; }
+    .icon-title { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+    .icon { width: 36px; height: 36px; flex: 0 0 36px; display: grid; place-items: center; border-radius: 8px; background: #eef5fc; color: #477fb7; }
+    .icon svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .mint { background: #eef8f3; color: #4b9a77; }
+    .pink { background: #fff0f4; color: #c16b81; }
+    .yellow { background: #fff7df; color: #b98621; }
+    .pill, .badge { display: inline-flex; align-items: center; min-height: 28px; padding: 3px 10px; border-radius: 999px; font-size: 13px; font-weight: 800; }
+    .pill { background: #fff0f4; color: #9c5267; margin-bottom: 10px; }
+    .buy { background: #eef8f3; color: #34785d; }
+    .watch { background: #fff7df; color: #916719; }
+    .trim { background: #fff1f3; color: #9b3f4a; }
+    table { width: 100%; border-collapse: collapse; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; }
+    th, td { padding: 13px 14px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+    th { background: #fff7f0; color: #5b6676; font-size: 14px; }
+    tr:last-child td { border-bottom: 0; }
+    .chart-box { min-height: 260px; border: 1px solid var(--line); border-radius: 8px; background: linear-gradient(180deg, #fff, #fffaf5); padding: 14px; }
+    .chart-svg { width: 100%; height: 220px; display: block; }
+    .action-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .action-card { border: 1px solid var(--line); border-radius: 8px; padding: 18px; background: #fff; }
+    .callout { margin-top: 14px; padding: 16px 18px; border-radius: 8px; border-left: 5px solid var(--mint); background: #f0faf5; color: #2f674f; font-weight: 800; }
+    .risk { border-left-color: var(--red); background: #fff1f3; color: #7d3940; }
+    .footer { margin-top: 16px; color: var(--muted); font-size: 13px; }
+    @media (max-width: 860px) { .hero, .three, .two, .action-grid { grid-template-columns: 1fr; } .hero-main { grid-template-columns: 1fr; } .illustration { justify-self: start; width: 136px; } .hero-main, .side-card, .card { padding: 18px; } th, td { padding: 11px 9px; font-size: 14px; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="hero-main">
+        <div>
+          <p class="eyebrow">7861 Daily Stock Note</p>
+          <h1>7861 每日股票分析</h1>
+          <p>韓風版重點整理：先看趨勢、再看支撐，條件到了才加碼或減量。</p>
+        </div>
+        <svg class="illustration" viewBox="0 0 230 190" role="img" aria-label="韓風股票分析桌面插圖">
+          <path d="M24 164h180" stroke="#eadfd8" stroke-width="5" stroke-linecap="round"/>
+          <rect x="34" y="44" width="128" height="86" rx="8" fill="#ffffff" stroke="#eadfd8" stroke-width="3"/>
+          <rect x="48" y="58" width="100" height="54" rx="6" fill="#fbf8f4"/>
+          <path d="M54 101c14-20 23-14 35-27 11-12 22-6 33-20 8-10 15-11 21-8" fill="none" stroke="#86bfa7" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M58 91h9M58 78h9M58 66h9M80 98V84M96 82V68M112 94V78M128 74V58" stroke="#e9a9ba" stroke-width="4" stroke-linecap="round"/>
+          <path d="M70 130h56l10 17H60z" fill="#fff7df" stroke="#eadfd8" stroke-width="3" stroke-linejoin="round"/>
+          <rect x="155" y="78" width="42" height="76" rx="8" fill="#ffffff" stroke="#eadfd8" stroke-width="3"/>
+          <rect x="162" y="90" width="28" height="42" rx="5" fill="#eef5fc"/>
+          <path d="M166 120l7-10 6 5 8-15" fill="none" stroke="#78a7d8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="176" cy="143" r="3" fill="#e9a9ba"/>
+          <rect x="28" y="126" width="38" height="30" rx="7" fill="#fff0f4" stroke="#e9a9ba" stroke-width="3"/>
+          <path d="M38 138h18M38 147h12" stroke="#9c5267" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="182" cy="42" r="16" fill="#fff7df" stroke="#e6bf69" stroke-width="3"/>
+          <path d="M176 42h12M182 36v12" stroke="#b98621" stroke-width="3" stroke-linecap="round"/>
+          <path d="M29 57c-5-8-4-16 3-22M197 67c9-7 13-15 10-25" fill="none" stroke="#e9a9ba" stroke-width="5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <aside class="side-card">
+        <div><div class="date-label">分析日期</div><div class="date">2026/06/25</div></div>
+        <div class="stance">今日結論：先觀察，不追高；跌破支撐要減量，重新站回壓力才考慮分批。</div>
+      </aside>
+    </section>
+
+    <section class="grid three">
+      <article class="card"><div class="icon-title"><span class="icon mint"><svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="m7 15 4-4 3 3 5-7"/></svg></span><h2>今日結論</h2></div><p>7861 今天下跌且仍低於短期均線，短線偏弱；目前不建議追高，先看 1090-1135 支撐是否守住。</p></article>
+      <article class="card"><div class="icon-title"><span class="icon pink"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></span><h2>加減碼提醒</h2></div><p>加碼要等止穩；若跌破 1090 且放量，或持股比例過高，應考慮減量控風險。</p></article>
+      <article class="card"><div class="icon-title"><span class="icon yellow"><svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg></span><h2>新聞溫度</h2></div><p>目前未查得重大新公告，今日主要訊號來自價格與量能：放量下跌偏警慎。</p></article>
+    </section>
+
+    <section class="card grid"><span class="pill">行情</span><h2>7861 今日行情</h2><table><thead><tr><th>項目</th><th>數值</th><th>解讀</th></tr></thead><tbody>
+<tr><td>股票</td><td>7861.TWO 貝爾威勒 / Bellwether Electronic</td><td>台灣興櫃股票，需注意流動性與報價差。</td></tr>
+<tr><td>Yahoo 收盤</td><td>2026-06-25 收 1135，-55（-4.62%）</td><td>單日跌幅大，短線賣壓明顯。</td></tr>
+<tr><td>興櫃官方快照</td><td>2026/06/25 14:00:06 最新 1125，均價 1103.49，量 272,475</td><td>興櫃有成交均價與買賣報價差，需用限價單思維。</td></tr>
+<tr><td>日內區間</td><td>開 1195 / 高 1195 / 低 1045</td><td>高低差大，盤中波動偏激烈。</td></tr>
+</tbody></table></section>
+
+    <section class="card grid"><span class="pill">趨勢</span><h2>趨勢分析</h2><table><thead><tr><th>時間</th><th>趨勢</th><th>判讀</th></tr></thead><tbody>
+<tr><td>短線 3-5 日</td><td>轉弱</td><td>收盤 1135 低於 5 日線約 1194，且今日放量下跌。</td></tr>
+<tr><td>波段 2-4 週</td><td>整理偏弱</td><td>20 日區間高 1445、低 1045；目前貼近區間低檔，不宜追高。</td></tr>
+<tr><td>中期 1-3 月</td><td>仍未完全破壞</td><td>收盤仍略高於 60 日線約 1093，但若跌破 1045-1090 區間，趨勢會更危險。</td></tr>
+</tbody></table><div class="callout">趨勢總結：短線偏弱、波段整理偏弱，但中期尚未完全破壞；接下來最重要的是 1090-1135 支撐與 1190-1205 壓力。</div></section>
+
+    <section class="card grid"><span class="pill">操作</span><h2>可加碼？要減量？</h2><div class="action-grid"><article class="action-card"><span class="badge watch">先觀察</span><h3>今日主判斷</h3><p>今日放量下跌且跌破 5 日、20 日線，短線不適合追高。等站回 1190-1205 或回測支撐不破再看。</p></article>
+<article class="action-card"><span class="badge buy">可分批加碼條件</span><h3>不是今天直接重買</h3><p>若股價守住 1090-1135，且下一交易日收紅、量能不再失控，可用小筆分批；單筆不要超過預計部位的 1/3。</p></article>
+<article class="action-card"><span class="badge trim">減量條件</span><h3>跌破支撐要控風險</h3><p>若跌破 1090 且放量，或你的單一個股部位已超過 15-20%，先減一部分，把風險降下來。</p></article></div><div class="callout risk">這不是個人化買賣指令。7861 為興櫃股票，價格波動與買賣價差可能較大，請用限價與分批，不要一次重壓。</div></section>
+
+    <section class="grid two">
+      <article class="card"><span class="pill">圖表分析</span><h2>技術走勢</h2><div class="chart-box">
+<svg class="chart-svg" viewBox="0 0 680 220" role="img" aria-label="7861 最近30日收盤趨勢圖">
+  <defs><linearGradient id="area7861" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#86bfa7" stop-opacity=".28"/><stop offset="1" stop-color="#86bfa7" stop-opacity=".03"/></linearGradient></defs>
+  <rect x="0" y="0" width="680" height="220" rx="8" fill="#fffaf5"/>
+  <path d="M 44,188 44.0,150.9 65.3,150.9 86.6,67.5 107.9,89.1 129.2,116.9 150.6,120.0 171.9,39.6 193.2,48.9 214.5,30.4 235.8,18.0 257.1,39.6 278.4,67.5 299.7,58.2 321.0,89.1 342.3,73.6 363.7,82.9 385.0,64.4 406.3,33.5 427.6,21.1 448.9,52.0 470.2,89.1 491.5,82.9 512.8,101.5 534.1,129.3 555.4,144.7 576.8,123.1 598.1,147.8 619.4,144.7 640.7,154.0 662.0,188.0 662,188" fill="url(#area7861)"/>
+  <polyline points="44.0,150.9 65.3,150.9 86.6,67.5 107.9,89.1 129.2,116.9 150.6,120.0 171.9,39.6 193.2,48.9 214.5,30.4 235.8,18.0 257.1,39.6 278.4,67.5 299.7,58.2 321.0,89.1 342.3,73.6 363.7,82.9 385.0,64.4 406.3,33.5 427.6,21.1 448.9,52.0 470.2,89.1 491.5,82.9 512.8,101.5 534.1,129.3 555.4,144.7 576.8,123.1 598.1,147.8 619.4,144.7 640.7,154.0 662.0,188.0" fill="none" stroke="#4b9a77" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="44" x2="662" y1="151.5" y2="151.5" stroke="#e9a9ba" stroke-width="2" stroke-dasharray="7 6"/>
+  <line x1="44" x2="662" y1="94.3" y2="94.3" stroke="#78a7d8" stroke-width="2" stroke-dasharray="7 6"/>
+  <line x1="44" x2="662" y1="213.8" y2="213.8" stroke="#e6bf69" stroke-width="2" stroke-dasharray="7 6"/>
+  <circle cx="662.0" cy="188.0" r="6" fill="#c65c67" stroke="#fff" stroke-width="3"/>
+  <text x="44" y="16" fill="#6f7885" font-size="12">高 1410</text>
+  <text x="44" y="212" fill="#6f7885" font-size="12">低 1135</text>
+  <text x="490" y="20" fill="#e9a9ba" font-size="12">MA5 1194</text>
+  <text x="555" y="20" fill="#78a7d8" font-size="12">MA20 1286</text>
+  <text x="622" y="20" fill="#b98621" font-size="12">MA60 1093</text>
+</svg></div></article>
+      <article class="card"><span class="pill">關鍵價位</span><h2>支撐 / 壓力 / 均線</h2><table><thead><tr><th>指標</th><th>位置</th><th>提醒</th></tr></thead><tbody>
+<tr><td>5 日線</td><td>1194</td><td>收盤低於 5 日線，短線偏弱。</td></tr>
+<tr><td>20 日線</td><td>1286</td><td>距離 20 日線較遠，反彈前先看量能。</td></tr>
+<tr><td>60 日線</td><td>1093</td><td>中期防線，若有效跌破需控風險。</td></tr>
+<tr><td>支撐</td><td>1090-1135</td><td>目前價格與 60 日線附近，跌破不急著攤平。</td></tr>
+<tr><td>壓力</td><td>1190-1205 / 1285</td><td>先站回 1190-1205，才算短線止穩；1285 附近是 20 日線壓力。</td></tr>
+</tbody></table></article>
+    </section>
+
+    <section class="card grid"><span class="pill">新聞</span><h2>今日新聞重點</h2><table><thead><tr><th>新聞/資料</th><th>影響</th><th>重點</th></tr></thead><tbody>
+<tr><td>櫃買中心興櫃即時統計</td><td>中性偏警慎</td><td>7861 今日成交量放大，買賣報價落在 1100/1125，短線籌碼波動升高。</td></tr>
+<tr><td>Yahoo Finance 行情資料</td><td>利空</td><td>收盤較前一交易日約 -7.56%，且低於 5 日與 20 日線。</td></tr>
+<tr><td>公開新聞搜尋</td><td>待確認</td><td>目前未查得足以改變操作計畫的重大新公告；今天主要依價格與量能控風險。</td></tr>
+</tbody></table></section>
+    <section class="card grid"><h2>操作計畫</h2><table><thead><tr><th>情境</th><th>動作</th></tr></thead><tbody>
+<tr><td>站回 1190-1205</td><td>短線止穩，可觀察是否小筆加碼。</td></tr>
+<tr><td>守住 1090-1135</td><td>支撐有效，分批買比一次買安全。</td></tr>
+<tr><td>跌破 1090 且放量</td><td>不攤平，先減量或停損一部分。</td></tr>
+<tr><td>已持有過重</td><td>即使看好，也先把單一個股比例降回計畫內。</td></tr>
+</tbody></table><div class="callout">操作原則：先不要追，守支撐才小買，跌破支撐先減量，站回壓力再加碼。</div></section>
+    <section class="card grid"><h2>資料來源</h2><p><a href="https://query1.finance.yahoo.com/v8/finance/chart/7861.TWO?range=6mo&interval=1d">Yahoo Finance chart API: 7861.TWO</a>；<a href="https://www.tpex.org.tw/openapi/v1/tpex_esb_latest_statistics">櫃買中心興櫃最新統計 OpenAPI</a>；公開網路新聞搜尋（2026/06/25）。</p></section>
+    <p class="footer">資料時間：台股興櫃 2026/06/25；本報告為教育與規劃用途，不是個人化投資建議。</p>
+  </main>
+</body>
+</html>
+
+
