@@ -1,43 +1,119 @@
-﻿<!DOCTYPE html>
-<html lang="zh-TW">
+﻿<!doctype html>
+<html lang="zh-Hant">
 <head>
-  <!-- 1. 將錯誤的 cloudflare 連結替換成正確的 Font Awesome 圖示庫 -->
-  <link rel="stylesheet" href="https://cloudflare.com">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>今日 ETF 熱門分析</title>
   <style>
-    /* 您原本設定的 CSS 樣式（此處省略以保持程式碼簡潔） */
-    :root { --ink: #26313f; --muted: #6d7684; --paper: #fbf8f5; --line: #eadfd9; --blue: #6f9ed6; --mint: #83bfa7; --pink: #e8a8b8; --yellow: #e5bf6a; --red: #c45b66; --shadow: 0 18px 40px rgba(118, 91, 78, .10); }
+    :root {
+      --ink: #26313f;
+      --muted: #6d7684;
+      --paper: #fbf8f5;
+      --line: #eadfd9;
+      --blue: #6f9ed6;
+      --mint: #83bfa7;
+      --pink: #e8a8b8;
+      --yellow: #e5bf6a;
+      --red: #c45b66;
+      --shadow: 0 18px 40px rgba(118, 91, 78, .10);
+    }
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif; color: var(--ink); background: linear-gradient(180deg, #f7edf0 0, #f7fbf5 360px, var(--paper) 100%); line-height: 1.65; }
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #f7edf0 0, #f7fbf5 360px, var(--paper) 100%);
+      line-height: 1.65;
+    }
     .page { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 34px 0 50px; }
-    /* ... 您的其他 CSS 樣式 ... */
+    .hero { display: grid; grid-template-columns: 1.22fr .78fr; gap: 16px; margin-bottom: 16px; }
+    .card, .hero-main, .date-card { border-radius: 8px; box-shadow: var(--shadow); border: 1px solid rgba(234, 223, 217, .9); }
+    .hero-main, .card { background: rgba(255,255,255,.94); padding: 24px; }
+    .date-card { background: #fff; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; min-height: 216px; position: relative; overflow: hidden; }
+    .date-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 8px; background: linear-gradient(90deg, var(--pink), var(--yellow), var(--mint), var(--blue)); }
+    .hero-main { display: grid; grid-template-columns: 1fr 168px; gap: 18px; align-items: center; overflow: hidden; }
+    .cute-illustration {
+      width: 168px;
+      max-width: 100%;
+      justify-self: end;
+      filter: drop-shadow(0 14px 24px rgba(111, 87, 74, .12));
+    }
+    .eyebrow { margin: 0 0 8px; color: #9c6d7a; font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    h1 { margin: 0 0 10px; font-size: clamp(30px, 4vw, 50px); line-height: 1.08; letter-spacing: 0; }
+    h2 { margin: 0; font-size: 21px; line-height: 1.25; }
+    p { margin: 0; color: var(--muted); }
+    .date-label { color: var(--muted); font-size: 14px; margin-top: 6px; }
+    .date { font-size: 31px; font-weight: 800; line-height: 1.15; color: #344055; }
+    .stance { border-top: 1px solid var(--line); padding-top: 16px; font-size: 18px; font-weight: 800; color: #344055; }
+    .grid { display: grid; gap: 14px; margin-top: 14px; }
+    .three { grid-template-columns: repeat(3, 1fr); }
+    .two { grid-template-columns: repeat(2, 1fr); }
+    .icon-title { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+    .icon { width: 36px; height: 36px; flex: 0 0 36px; display: grid; place-items: center; border-radius: 8px; background: #eef5fc; color: #477fb7; }
+    .icon svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .icon.mint { background: #eef8f3; color: #4b9a77; }
+    .icon.pink { background: #fff0f4; color: #c16b81; }
+    .icon.yellow { background: #fff7df; color: #b98621; }
+    .pill { display: inline-flex; align-items: center; min-height: 28px; padding: 3px 10px; border-radius: 999px; font-size: 13px; font-weight: 800; background: #fff0f4; color: #9c5267; margin-bottom: 10px; }
+    .action-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .action-card { border-radius: 8px; padding: 18px; border: 1px solid var(--line); background: #fff; }
+    .action-card h3 { margin: 0 0 8px; font-size: 18px; line-height: 1.25; }
+    .action-card p { font-size: 15px; }
+    .action-badge { display: inline-flex; align-items: center; min-height: 28px; padding: 3px 10px; border-radius: 999px; font-size: 13px; font-weight: 800; margin-bottom: 10px; }
+    .buy { background: #eef8f3; color: #34785d; }
+    .watch { background: #fff7df; color: #916719; }
+    .trim { background: #fff1f3; color: #9b3f4a; }
+    .tiny-icon { display: inline-flex; width: 24px; height: 24px; margin-right: 6px; vertical-align: -6px; }
+    .tiny-icon svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    table { width: 100%; border-collapse: collapse; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; }
+    th, td { padding: 13px 14px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+    th { background: #fff7f0; color: #5b6676; font-size: 14px; }
+    tr:last-child td { border-bottom: 0; }
+    .bars { display: grid; gap: 10px; margin-top: 12px; }
+    .bar-row { display: grid; grid-template-columns: 130px 1fr 52px; gap: 10px; align-items: center; font-weight: 800; }
+    .bar { height: 12px; border-radius: 99px; background: #f0ebe8; overflow: hidden; }
+    .bar span { display: block; height: 100%; background: var(--blue); border-radius: inherit; }
+    .mint-bar span { background: var(--mint); }
+    .pink-bar span { background: var(--pink); }
+    .yellow-bar span { background: var(--yellow); }
+    .callout { margin-top: 14px; padding: 16px 18px; border-radius: 8px; border-left: 5px solid var(--mint); background: #f0faf5; color: #2f674f; font-weight: 800; }
+    .risk { border-left-color: var(--red); background: #fff1f3; color: #7d3940; }
+    .footer { margin-top: 16px; color: var(--muted); font-size: 13px; }
+    @media (max-width: 860px) {
+      .hero, .three, .two { grid-template-columns: 1fr; }
+      .hero-main { grid-template-columns: 1fr; }
+      .cute-illustration { justify-self: start; width: 132px; }
+      .action-grid { grid-template-columns: 1fr; }
+      .hero-main, .date-card, .card { padding: 18px; }
+      .bar-row { grid-template-columns: 96px 1fr 46px; font-size: 14px; }
+      th, td { padding: 11px 9px; font-size: 14px; }
+    }
   </style>
 </head>
 <body>
-
-  <!-- 2. 加入有美化過的按鈕樣式與正確圖示 -->
-  <div style="padding: 20px 0 0 20px;">
-    <a href="7861每日分析_2026-06-25.html" style="font-size: 18px; color: white; background-color: var(--blue, #6f9ed6); padding: 10px 20px; border-radius: 20px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(111,158,214,0.3); font-weight: bold; transition: 0.2s;">
-      <i class="fas fa-chart-line"></i> 點我觀看每日分析
-    </a>
-  </div>
-
-  <!-- 3. 您原本的網頁主體內容 -->
-  <main class="page">
-     <!-- 這裡放您原本的 hero, card, table 等內容 -->
-  </main>
-
-</body>
-</html>
-</a>
   <main class="page">
     <section class="hero">
       <div class="hero-main">
-        <p class="eyebrow">Popular ETF Daily</p>
-        <h1>今日 ETF 熱門分析</h1>
-        <p>給小資族、上班族看的簡單版：先買核心大盤 ETF，再用小比例觀察熱門題材，不追高、不重壓。</p>
+        <div>
+          <p class="eyebrow">Popular ETF Daily</p>
+          <h1>今日 ETF 熱門分析</h1>
+          <p>給小資族、上班族看的簡單版：先買核心大盤 ETF，再用小比例觀察熱門題材，不追高、不重壓。</p>
+        </div>
+        <svg class="cute-illustration" viewBox="0 0 220 190" role="img" aria-label="可愛投資小插圖">
+          <rect x="22" y="42" width="144" height="110" rx="8" fill="#fff" stroke="#eadfd9" stroke-width="3"/>
+          <path d="M45 123l25-25 22 15 38-48" fill="none" stroke="#83bfa7" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="45" cy="123" r="7" fill="#83bfa7"/>
+          <circle cx="70" cy="98" r="7" fill="#83bfa7"/>
+          <circle cx="92" cy="113" r="7" fill="#83bfa7"/>
+          <circle cx="130" cy="65" r="7" fill="#83bfa7"/>
+          <rect x="58" y="24" width="72" height="32" rx="8" fill="#fff7df" stroke="#e5bf6a" stroke-width="3"/>
+          <path d="M76 40h36" stroke="#b98621" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="166" cy="134" r="34" fill="#fff0f4" stroke="#e8a8b8" stroke-width="3"/>
+          <path d="M151 127h.1M181 127h.1" stroke="#9c5267" stroke-width="6" stroke-linecap="round"/>
+          <path d="M157 143c9 8 19 8 28 0" fill="none" stroke="#9c5267" stroke-width="4" stroke-linecap="round"/>
+          <path d="M181 85c13 12 18 26 16 43" fill="none" stroke="#6f9ed6" stroke-width="7" stroke-linecap="round"/>
+          <path d="M26 164h164" stroke="#eadfd9" stroke-width="5" stroke-linecap="round"/>
+        </svg>
       </div>
       <aside class="date-card">
         <div>
@@ -67,6 +143,29 @@
       <span class="pill">熱門觀察</span>
       <h2>今日熱門 ETF 清單</h2>
       <table><thead><tr><th>熱門 ETF</th><th>最新資料</th><th>今天怎麼看</th><th>小資族動作</th></tr></thead><tbody><tr><td>0050 台灣50</td><td>6/25 收 107.05，約 -2.77%，量約 7,150 萬</td><td>長期核心熱門，但單日跌幅和大盤不同步，需留意配息/價格口徑。</td><td>定期定額可續買；不要因單日跌就重壓。</td></tr><tr><td>00919 高股息</td><td>6/25 收 30.38，約 -0.65%，量約 5,311 萬</td><td>配息族關注度高，波動比大盤核心小一些。</td><td>想要現金流可少量配置，別把配息當保證獲利。</td></tr><tr><td>00878 永續高股息</td><td>6/25 收 33.90，約 -0.24%，量約 2,589 萬</td><td>小資族常見配息標的，適合穩定感需求。</td><td>可作 10% 到 20% 配息部位。</td></tr><tr><td>QQQ / QQQM</td><td>6/24 QQQ 收 710.62，約 -0.42%</td><td>科技與 AI 題材仍熱門，但短線估值壓力升高。</td><td>只當成長加速器，建議 10% 到 20%。</td></tr><tr><td>VOO / VTI</td><td>6/24 VOO 約 -0.10%，VTI 約 -0.01%</td><td>美股核心大盤，適合長期定期定額。</td><td>美股帳戶核心首選，匯率風險要接受。</td></tr></tbody></table>
+    </section>
+
+    <section class="card grid">
+      <span class="pill">今日提醒</span>
+      <h2>加碼 / 觀察 / 減碼標示</h2>
+      <div class="action-grid">
+        <article class="action-card">
+          <span class="action-badge buy"><span class="tiny-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>可分批加碼</span>
+          <h3>0050、006208、VOO、VTI</h3>
+          <p>適合當核心資產。今天若本來就有定期定額，可以照計畫買；若想額外加碼，建議小筆分批，不要一次買滿。</p>
+        </article>
+        <article class="action-card">
+          <span class="action-badge watch"><span class="tiny-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></span>先觀察</span>
+          <h3>QQQ、QQQM、00919、00878</h3>
+          <p>科技 ETF 熱門但波動較大，配息 ETF 適合現金流需求。今天可小比例配置，避免因熱門就追高。</p>
+        </article>
+        <article class="action-card">
+          <span class="action-badge trim"><span class="tiny-icon"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m15 8 4 4-4 4"/></svg></span>減碼/停利條件</span>
+          <h3>單一熱門題材超過 20%</h3>
+          <p>若 QQQ/科技題材或高股息部位已超過總投資 20% 到 25%，今天不加碼；若短線獲利很多，可賣一點回到原配置。</p>
+        </article>
+      </div>
+      <div class="callout risk">提醒：這不是個人化買賣指令。真正要賣出前，先看你的成本、持有比例、急用現金與投資年限。</div>
     </section>
 
     <section class="grid two">
@@ -109,7 +208,6 @@
     </section>
     <p class="footer">資料時間：台股 2026/06/25 收盤；美股 2026/06/24 收盤。建議每月檢查配置，不需要每天換股。</p>
   </main>
-  
 </body>
 </html>
 
